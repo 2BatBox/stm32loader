@@ -34,9 +34,10 @@ stm32_errors_t reset(int fd){
 		return STM32_ERR_INVALID_ARGUMENT;
 
 	if(
-		serial_signal(fd, SERIAL_SIGNAL_DTR, 1) != SERIAL_ERR_OK ||
-		serial_signal(fd, SERIAL_SIGNAL_DTR, 0) != SERIAL_ERR_OK
-	)
+		serial_signal(fd, SERIAL_SIGNAL_DTR, SIGNAL_HIGH) != SERIAL_ERR_OK ||
+		serial_signal(fd, SERIAL_SIGNAL_DTR, SIGNAL_LOW) != SERIAL_ERR_OK ||
+		serial_signal(fd, SERIAL_SIGNAL_DTR, SIGNAL_HIGH) != SERIAL_ERR_OK
+		)
 		return STM32_ERR_SERIAL;
 
 	return STM32_ERR_OK;
@@ -47,9 +48,7 @@ stm32_errors_t set_boot_pin(int fd, int status){
 	if (fd < 0)
 		return STM32_ERR_INVALID_ARGUMENT;
 
-	if(
-		serial_signal(fd, SERIAL_SIGNAL_RTS, status) != SERIAL_ERR_OK
-	)
+	if(serial_signal(fd, SERIAL_SIGNAL_RTS, status) != SERIAL_ERR_OK)
 		return STM32_ERR_SERIAL;
 
 	return STM32_ERR_OK;
@@ -84,7 +83,7 @@ int check_for_errors(const char *msg, stm32_errors_t error, int fd){
 		return 0;
 }
 
-int print_error(stm32_errors_t error) {
+void print_error(stm32_errors_t error) {
 
 	switch (error) {
 	case STM32_ERR_INVALID_ARGUMENT:
@@ -143,48 +142,50 @@ void action_info(int fd){
 
 int main(int argc, char *argv[]) {
 
-	FILE* fd = fopen(argv[1], "r");
+/*	FILE* fd = fopen(argv[1], "r");
 
 	if (fd == NULL){
 		printf("opening %s error (%d) \n", argv[1], fd);
 		return;
 	}
 
-	ih_storage_t hexStorage;
+*/
 
-	ih_errors_t result = ih_read(fd, &hexStorage);
+//	ih_storage_t hexStorage;
 
-	printf("result = %d \n", result);
+//	ih_errors_t result = ih_read(fd, &hexStorage);
+
+//	printf("result = %d \n", result);
 
 //	uint8_t buf [255];
 //	int result = scanf("%2x", buf);
 //	printf(">>res: %d %d \n", result, buf[0]);
 
-	fclose(fd);
+//	fclose(fd);
 
-//	int fd = serial_open(argv[1]);
-//
-//	if (fd < 0){
-//		printf("opening port error (%d) \n", fd);
-//		return;
-//	}
-//
-//	serial_errors_t serial_result = serial_setup(fd, SERIAL_BAUD_57600, SERIAL_BITS_8, SERIAL_PARITY_EVEN, SERIAL_STOP_BITS_1);
-//	stm32_errors_t result;
-//
-//	if (serial_result != SERIAL_ERR_OK){
-//		printf("setup port error \n");
-//		serial_close(fd);
-//		return;
-//	}
-//
-//	check_for_errors("stm32_init", stm32_init(fd), fd);
-//	action_info(fd);
-//
-////	check_for_errors("set_boot_pin", set_boot_pin(fd, 1), fd);
-////	check_for_errors("reset", reset(fd), fd);
-////	int i;
-////	uint16_t pages [0x0FFD];
+	int fd = serial_open(argv[1]);
+
+	if (fd < 0){
+		printf("opening port error (%d) \n", fd);
+		return;
+	}
+
+	serial_errors_t serial_result = serial_setup(fd, SERIAL_BAUD_57600, SERIAL_BITS_8, SERIAL_PARITY_EVEN, SERIAL_STOP_BITS_1);
+	stm32_errors_t result;
+
+	if (serial_result != SERIAL_ERR_OK){
+		printf("setup port error \n");
+		serial_close(fd);
+		return;
+	}
+
+	check_for_errors("set_boot_pin", set_boot_pin(fd, SIGNAL_HIGH), fd);
+	check_for_errors("reset", reset(fd), fd);
+	usleep(200);
+	check_for_errors("stm32_init", stm32_init(fd), fd);
+	action_info(fd);
+//	int i;
+//	uint16_t pages [0x0FFD];
 ////	for (i = 0; i < 0x0FFD; i++) {
 ////		pages[i] = i;
 ////	}
@@ -213,7 +214,11 @@ int main(int argc, char *argv[]) {
 ////	check_for_errors("stm32_set_boot_pin", stm32_set_boot_pin(fd, 0), fd);
 ////	check_for_errors("stm32_reset", stm32_reset(fd), fd);
 //
-//	serial_close(fd);
+
+	check_for_errors("set_boot_pin", set_boot_pin(fd, SIGNAL_LOW), fd);
+	check_for_errors("reset", reset(fd), fd);
+	usleep(200);
+	serial_close(fd);
 
 	return EXIT_SUCCESS;
 }

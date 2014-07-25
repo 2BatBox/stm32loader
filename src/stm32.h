@@ -24,7 +24,7 @@
 
 #include <stdint.h>
 
-typedef enum stm32_errors {
+typedef enum {
 	STM32_ERR_OK,
 	STM32_ERR_SERIAL,
 	STM32_ERR_PROTOCOL,
@@ -32,25 +32,25 @@ typedef enum stm32_errors {
 	STM32_ERR_RDP,
 } stm32_errors_t ;
 
-typedef enum stm32_erase_type {
+typedef enum {
 	STM32_ERASE_MASS,
 	STM32_ERASE_BANK1,
 	STM32_ERASE_BANK2
 } stm32_erase_type_t ;
 
-typedef struct stm32_bootloader_info {
+typedef struct {
 	uint8_t version;
 	uint8_t commandsSize;
 	uint8_t* commands;
 } stm32_bootloader_info_t ;
 
-typedef struct stm32_rpc_info {
+typedef struct {
 	uint8_t version;
 	uint8_t rpdc;	// read protection disable counter
 	uint8_t rpec;	// read protection enable counter
 } stm32_rpc_info_t ;
 
-typedef struct stm32_device_info {
+typedef struct {
 	uint8_t* deviceId;
 	uint8_t deviceIdSize;
 } stm32_device_info_t ;

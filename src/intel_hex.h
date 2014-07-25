@@ -24,19 +24,19 @@
 
 #include <stdint.h>
 
-typedef enum ih_errors {
+typedef enum {
 	IH_ERR_OK,
 	IH_ERR_FILE_IO,
 	IH_ERR_FORMAT
 } ih_errors_t ;
 
-typedef struct ih_record {
+typedef struct {
 	uint32_t address;
 	uint8_t* data;
 	uint8_t size;
 } ih_record_t ;
 
-typedef struct ih_storage {
+typedef struct {
 	ih_record_t* first;
 	uint32_t size;
 } ih_storage_t ;

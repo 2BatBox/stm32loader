@@ -22,7 +22,10 @@
 #ifndef SERIAL_H_
 #define SERIAL_H_
 
-typedef enum serial_baud {
+#define SIGNAL_HIGH		((int)0)
+#define SIGNAL_LOW		((int)1)
+
+typedef enum {
 	SERIAL_BAUD_1200,
 	SERIAL_BAUD_1800,
 	SERIAL_BAUD_2400,
@@ -34,30 +37,30 @@ typedef enum serial_baud {
 	SERIAL_BAUD_115200,
 } serial_baud_t ;
 
-typedef enum serial_bits {
+typedef enum {
 	SERIAL_BITS_5,
 	SERIAL_BITS_6,
 	SERIAL_BITS_7,
 	SERIAL_BITS_8
 } serial_bits_t ;
 
-typedef enum serial_parity {
+typedef enum {
 	SERIAL_PARITY_NONE,
 	SERIAL_PARITY_EVEN,
 	SERIAL_PARITY_ODD
 } serial_parity_t  ;
 
-typedef enum serial_stop_bits {
+typedef enum {
 	SERIAL_STOP_BITS_1,
 	SERIAL_STOP_BITS_2
 } serial_stop_bits_t ;
 
-typedef enum serial_signals {
+typedef enum {
 	SERIAL_SIGNAL_DTR,
 	SERIAL_SIGNAL_RTS,
 } serial_signals_t ;
 
-typedef enum serial_errors {
+typedef enum {
 	SERIAL_ERR_OK,
 	SERIAL_ERR_INVALIG_ARGUMENT,
 	SERIAL_ERR_SYSTEM
